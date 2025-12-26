@@ -241,6 +241,10 @@ public class ModEntityEventHandler {
             event.getEntity().getCommandSenderWorld().getProfiler().pop();
 
         }
+        // Tick ExtendedHostileMob for hostile mobs (zombies, endermen, creepers)
+        if (event.getEntity() instanceof LivingEntity) {
+            ExtendedHostileMob.getSafe(event.getEntity()).ifPresent(IExtendedCreatureVampirism::tick);
+        }
     }
 
     @SubscribeEvent
