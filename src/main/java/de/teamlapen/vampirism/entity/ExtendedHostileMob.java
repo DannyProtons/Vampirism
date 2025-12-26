@@ -93,6 +93,11 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
     }
 
     @Override
+    public void setPoisonousBlood(boolean poisonous) {
+        // Hostile mobs don't use poisonous blood, so this is a no-op
+    }
+
+    @Override
     public void tick() {
         if (!entity.getCommandSenderWorld().isClientSide) {
             // Make sure entities with no blood die
