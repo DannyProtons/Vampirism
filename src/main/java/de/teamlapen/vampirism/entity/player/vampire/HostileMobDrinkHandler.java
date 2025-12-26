@@ -28,7 +28,11 @@ public class HostileMobDrinkHandler {
             return;
         }
 
-        ServerPlayer player = (ServerPlayer) vampirePlayer.asEntity();
+        // Check if we're on server side and entity is ServerPlayer
+        if (!(vampirePlayer.asEntity() instanceof ServerPlayer player)) {
+            return; // Skip client-side execution
+        }
+
         if (player.level() instanceof ServerLevel serverLevel) {
             // Check if the blood source is a hostile mob
             event.getBloodSource().getEntity().ifPresent(entity -> {
