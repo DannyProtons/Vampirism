@@ -105,7 +105,7 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
     public final static ResourceLocation NATURAL_ARMOR_UUID = VResourceLocation.mod("natural_armor");
     private static final ResourceLocation LEVEL_DAMAGE_UUID = VResourceLocation.mod("level_damage");
     private static final Logger LOGGER = LogManager.getLogger(VampirePlayer.class);
-    private final static int FEED_TIMER = 20;
+    private final static int BASE_FEED_TIMER = 20;
     /**
      * Keys for NBT values
      */
@@ -296,6 +296,10 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
         if (player instanceof ServerPlayer && Permissions.FEED.isDisallowed(((ServerPlayer) player))) {
             return BITE_TYPE.NONE;
         }
+        // Check for hostile mobs first (available from level 1+)
+        if (getLevel() >= 1 && HostileMobBloodRegistry.isHostileMobDrinkable(entity) && entity.isAlive()) {
+            return BITE_TYPE.SUCK_BLOOD_HOSTILE;
+        }
         if (entity instanceof IBiteableEntity) {
             if (((IBiteableEntity) entity).canBeBitten(this)) return BITE_TYPE.SUCK_BLOOD;
         }
@@ -434,7 +438,21 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
      * @return 0-1f
      */
     public float getFeedProgress() {
-        return feedBiteTickCounter / (float) FEED_TIMER;
+        return feedBiteTickCounter / (float) getFeedTimer();
+    }
+
+    /**
+     * Get the feed timer duration based on vampire level
+     * @return Feed timer in ticks (minimum 1)
+     */
+    public int getFeedTimer() {
+        int level = getLevel();
+        if (level <= 0) {
+            return BASE_FEED_TIMER;
+        }
+        double reductionPerLevel = VampirismConfig.BALANCE.vpFeedTimerReductionPerLevel.get();
+        int reduction = (int) ((level - 1) * reductionPerLevel);
+        return Math.max(1, BASE_FEED_TIMER - reduction);
     }
 
     /**
@@ -849,7 +867,7 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
                     sync(syncPacket, syncToAll);
                 }
 
-                if (feed_victim != -1 && feedBiteTickCounter++ >= FEED_TIMER) {
+                if (feed_victim != -1 && feedBiteTickCounter++ >= getFeedTimer()) {
                     updateFeeding();
                     feedBiteTickCounter = 0;
                 }
@@ -882,7 +900,7 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
                     feed_victim = -1;
                     return;
                 }
-                if (feedBiteTickCounter >= FEED_TIMER) {
+                if (feedBiteTickCounter >= getFeedTimer()) {
                     feedBiteTickCounter = 0;
                 }
             }
@@ -1251,7 +1269,15 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
         int blood = 0;
         float saturationMod = IBloodStats.HIGH_SATURATION;
         boolean continue_feeding = true;
-        if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_CREATURE && entity.isAlive()) {
+        if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_HOSTILE && entity.isAlive()) {
+            // Handle hostile mob blood drinking
+            blood = HostileMobBloodRegistry.getBloodAmount(entity);
+            saturationMod = HostileMobBloodRegistry.getSaturation(entity);
+            // Hostile mobs die after one bite if advanced biter skill is active
+            if (isAdvancedBiter()) {
+                continue_feeding = false;
+            }
+        } else if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_CREATURE && entity.isAlive()) {
             Optional<ExtendedCreature> opt = ExtendedCreature.getSafe(entity);
             blood = opt.map(creature -> creature.onBite(this)).orElse(0);
             saturationMod = opt.map(IBiteableEntity::getBloodSaturation).orElse(0f);

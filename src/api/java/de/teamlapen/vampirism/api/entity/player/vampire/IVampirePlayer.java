@@ -112,6 +112,7 @@ public interface IVampirePlayer extends IVampire, IFactionPlayer<IVampirePlayer>
         SUCK_BLOOD_CREATURE("suck_blood_creature"),
         SUCK_BLOOD_PLAYER("suck_blood_player"),
         SUCK_BLOOD("suck_blood"),
+        SUCK_BLOOD_HOSTILE("suck_blood_hostile"),
         NONE("none"),
         HUNTER_CREATURE("hunter_creature");
 
