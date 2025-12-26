@@ -2,6 +2,7 @@ package de.teamlapen.vampirism.entity;
 
 import de.teamlapen.lib.lib.storage.IAttachment;
 import de.teamlapen.vampirism.api.entity.IExtendedCreatureVampirism;
+import de.teamlapen.vampirism.api.entity.convertible.IConvertedCreature;
 import de.teamlapen.vampirism.api.entity.vampire.IVampire;
 import de.teamlapen.vampirism.api.util.VResourceLocation;
 import de.teamlapen.vampirism.core.ModAttachments;
@@ -16,6 +17,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +61,24 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
     @Override
     public @NotNull ResourceLocation getAttachedKey() {
         return SERIALIZER_ID;
+    }
+
+    @Override
+    public boolean canBecomeVampire() {
+        return false; // Hostile mobs cannot be converted to vampires
+    }
+
+    @Override
+    public PathfinderMob getEntity() {
+        if (entity instanceof PathfinderMob) {
+            return (PathfinderMob) entity;
+        }
+        throw new IllegalStateException("ExtendedHostileMob entity must be a PathfinderMob");
+    }
+
+    @Override
+    public @Nullable IConvertedCreature<?> makeVampire() {
+        return null; // Hostile mobs cannot be converted
     }
 
     @Override
