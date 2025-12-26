@@ -71,6 +71,12 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
         return blood;
     }
 
+    public void setBlood(int blood) {
+        if (blood >= 0 && blood <= getMaxBlood()) {
+            this.blood = blood;
+        }
+    }
+
     @Override
     public float getBloodSaturation() {
         return HostileMobBloodRegistry.getSaturation(entity);
@@ -158,6 +164,11 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
         if (nbt.contains(KEY_MAX_BLOOD)) {
             this.maxBlood = nbt.getInt(KEY_MAX_BLOOD);
         }
+    }
+
+    @Override
+    public String nbtKey() {
+        return NBT_KEY;
     }
 
     public static class Serializer implements IAttachmentSerializer<CompoundTag, ExtendedHostileMob> {
