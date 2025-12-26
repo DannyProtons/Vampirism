@@ -144,6 +144,17 @@ public class BalanceConfig {
     public final ModConfigSpec.BooleanValue vpNightVisionDisabled;
     public final ModConfigSpec.BooleanValue vpBloodVisionDisabled;
 
+    // Hostile Mob Blood Drinking System
+    public final ModConfigSpec.DoubleValue vpFeedTimerReductionPerLevel;
+    public final ModConfigSpec.IntValue vpHostileDrinkBaseThreshold;
+    public final ModConfigSpec.IntValue vpHostileDrinkThresholdIncrement;
+    public final ModConfigSpec.DoubleValue vpZombieArmorPerTier;
+    public final ModConfigSpec.DoubleValue vpZombieRegenPerTier;
+    public final ModConfigSpec.DoubleValue vpEndermanSpeedPerTier;
+    public final ModConfigSpec.DoubleValue vpEndermanReachPerTier;
+    public final ModConfigSpec.DoubleValue vpCreeperDamagePerTier;
+    public final ModConfigSpec.DoubleValue vpCreeperMiningPerTier;
+
 
     public final ModConfigSpec.IntValue vaFreezeCooldown;
     public final ModConfigSpec.BooleanValue vaFreezeEnabled;
@@ -371,6 +382,18 @@ public class BalanceConfig {
         vpArmorPenalty = builder.comment("Whether vampire have a reduced speed and attack boost when wearing heavy armor").define("armorPenalty", true);
         vpNightVisionDisabled = builder.comment("Disable vampire night vision").define("nightVisionDisabled", false);
         vpBloodVisionDisabled = builder.comment("Disable vampire blood vision").define("bloodVisionDisabled", false);
+
+        // Hostile Mob Blood Drinking System
+        builder.comment("Hostile Mob Blood Drinking Progression System");
+        vpFeedTimerReductionPerLevel = builder.comment("Ticks reduced from bite duration per vampire level (base 20 ticks, minimum 1 tick)").defineInRange("feedTimerReductionPerLevel", 1.0, 0.0, 2.0);
+        vpHostileDrinkBaseThreshold = builder.comment("Base number of successful hostile mob blood drinks required for first tier").defineInRange("hostileDrinkBaseThreshold", 100, 10, 1000);
+        vpHostileDrinkThresholdIncrement = builder.comment("Additional drinks required per tier (tier 1: base, tier 2: base+increment, tier 3: base+2*increment, etc)").defineInRange("hostileDrinkThresholdIncrement", 100, 0, 500);
+        vpZombieArmorPerTier = builder.comment("Armor points gained per zombie blood drinking tier").defineInRange("zombieArmorPerTier", 0.5, 0.0, 5.0);
+        vpZombieRegenPerTier = builder.comment("Health regeneration (HP/s) gained per zombie blood drinking tier").defineInRange("zombieRegenPerTier", 0.2, 0.0, 2.0);
+        vpEndermanSpeedPerTier = builder.comment("Movement speed multiplier gained per enderman blood drinking tier (0.05 = 5%)").defineInRange("endermanSpeedPerTier", 0.05, 0.0, 0.5);
+        vpEndermanReachPerTier = builder.comment("Block reach distance gained per enderman blood drinking tier").defineInRange("endermanReachPerTier", 0.5, 0.0, 5.0);
+        vpCreeperDamagePerTier = builder.comment("Attack damage multiplier gained per creeper blood drinking tier (0.05 = 5%)").defineInRange("creeperDamagePerTier", 0.05, 0.0, 0.5);
+        vpCreeperMiningPerTier = builder.comment("Mining speed multiplier gained per creeper blood drinking tier (0.05 = 5%)").defineInRange("creeperMiningPerTier", 0.05, 0.0, 0.5);
 
 
         //Vampire actions

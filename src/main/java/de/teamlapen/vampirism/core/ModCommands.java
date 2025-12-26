@@ -32,6 +32,7 @@ public class ModCommands {
     public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<?, ?>> REFINEMENT_SET = COMMAND_ARGUMENT_TYPES.register("refinement_set", () -> ArgumentTypeInfos.registerByClass(RefinementSetArgument.class, SingletonArgumentInfo.contextFree(RefinementSetArgument::set)));
     public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<?, ?>> BIOME = COMMAND_ARGUMENT_TYPES.register("biome", () -> ArgumentTypeInfos.registerByClass(BiomeArgument.class, SingletonArgumentInfo.contextFree(BiomeArgument::biome)));
     public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<?, ?>> MINION_ID = COMMAND_ARGUMENT_TYPES.register("minion_id", () -> ArgumentTypeInfos.registerByClass(MinionArgument.class, new MinionArgument.Info()));
+    public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<?, ?>> MOB_TYPE = COMMAND_ARGUMENT_TYPES.register("mob_type", () -> ArgumentTypeInfos.registerByClass(MobTypeArgument.class, SingletonArgumentInfo.contextFree(MobTypeArgument::mobType)));
 
     static void register(IEventBus bus) {
         COMMAND_ARGUMENT_TYPES.register(bus);
@@ -93,6 +94,7 @@ public class ModCommands {
                             .then(GiveAccessoriesCommand.register())
                             .then(SummonDummy.register())
                             .then(GiveBannerCommand.register())
+                            .then(BloodDrinkProgressionCommand.registerTest())
             );
         }
     }
