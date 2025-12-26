@@ -16,6 +16,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.attachment.IAttachmentHolder;
 import net.neoforged.neoforge.attachment.IAttachmentSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,11 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
     @Override
     public @NotNull Entity asEntity() {
         return this.entity;
+    }
+
+    @Override
+    public @NotNull ResourceLocation getAttachedKey() {
+        return SERIALIZER_ID;
     }
 
     @Override
