@@ -79,4 +79,12 @@ public class ClientPayloadHandler {
     public static void handleSkillTreePacket(ClientboundSkillTreePacket msg, IPayloadContext context) {
         context.enqueueWork(() -> ClientSkillTreeData.init(msg.skillTrees()));
     }
+
+    public static void handleBloodDrinkDataPacket(de.teamlapen.vampirism.network.ClientboundBloodDrinkDataPacket msg, IPayloadContext context) {
+        context.enqueueWork(() -> de.teamlapen.vampirism.client.ClientBloodDrinkData.setData(
+                msg.zombieCount(), msg.zombieTier(),
+                msg.endermanCount(), msg.endermanTier(),
+                msg.creeperCount(), msg.creeperTier()
+        ));
+    }
 }

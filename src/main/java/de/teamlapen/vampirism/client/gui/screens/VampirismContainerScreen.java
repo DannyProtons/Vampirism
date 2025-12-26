@@ -8,6 +8,7 @@ import de.teamlapen.vampirism.api.entity.player.task.ITaskInstance;
 import de.teamlapen.vampirism.api.items.IRefinementItem;
 import de.teamlapen.vampirism.api.util.VResourceLocation;
 import de.teamlapen.vampirism.client.core.ModKeys;
+import de.teamlapen.vampirism.client.gui.components.BloodDrinkProgressWidget;
 import de.teamlapen.vampirism.client.gui.screens.skills.SkillsScreen;
 import de.teamlapen.vampirism.entity.factions.FactionPlayerHandler;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
@@ -15,6 +16,7 @@ import de.teamlapen.vampirism.inventory.TaskMenu;
 import de.teamlapen.vampirism.inventory.VampirismMenu;
 import de.teamlapen.vampirism.mixin.client.accessor.AbstractContainerScreenAccessor;
 import de.teamlapen.vampirism.network.ServerboundDeleteRefinementPacket;
+import de.teamlapen.vampirism.network.ServerboundRequestBloodDrinkDataPacket;
 import de.teamlapen.vampirism.util.Helper;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.ChatFormatting;
@@ -59,6 +61,7 @@ public class VampirismContainerScreen extends AbstractContainerScreen<VampirismM
     private TaskList list;
     private final Map<Integer, Button> refinementRemoveButtons = new Int2ObjectOpenHashMap<>(3);
     private Component level;
+    private BloodDrinkProgressWidget bloodDrinkWidget;
 
     public VampirismContainerScreen(@NotNull VampirismMenu container, @NotNull Inventory playerInventory, @NotNull Component titleIn) {
         super(container, playerInventory, titleIn);
@@ -147,6 +150,11 @@ public class VampirismContainerScreen extends AbstractContainerScreen<VampirismM
         }
 
         this.list = this.addRenderableWidget(new TaskList(Minecraft.getInstance(), this.menu, factionPlayer, this.leftPos + 83, this.topPos + 7, 137, 104, () -> new ArrayList<>(this.menu.getTaskInfos())));
+
+        // Request blood drink data from server and add progress widget
+        VampirismMod.proxy.sendToServer(new ServerboundRequestBloodDrinkDataPacket());
+        this.bloodDrinkWidget = new BloodDrinkProgressWidget(this.leftPos + 30, this.topPos + 7, 50);
+        this.addRenderableOnly(this.bloodDrinkWidget);
 
         var button1 = this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.topPos + 90, 20, 20,  SKILLS,  context -> {
             if (this.minecraft.player.isAlive() && VampirismPlayerAttributes.get(this.minecraft.player).faction != null) {
