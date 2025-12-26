@@ -142,6 +142,24 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
         }
     }
 
+    @Override
+    public @NotNull CompoundTag serializeUpdateNBT(HolderLookup.@NotNull Provider provider) {
+        CompoundTag nbt = new CompoundTag();
+        nbt.putInt(KEY_BLOOD, getBlood());
+        nbt.putInt(KEY_MAX_BLOOD, getMaxBlood());
+        return nbt;
+    }
+
+    @Override
+    public void deserializeUpdateNBT(HolderLookup.@NotNull Provider provider, @NotNull CompoundTag nbt) {
+        if (nbt.contains(KEY_BLOOD)) {
+            setBlood(nbt.getInt(KEY_BLOOD));
+        }
+        if (nbt.contains(KEY_MAX_BLOOD)) {
+            this.maxBlood = nbt.getInt(KEY_MAX_BLOOD);
+        }
+    }
+
     public static class Serializer implements IAttachmentSerializer<CompoundTag, ExtendedHostileMob> {
         @Override
         public @NotNull ExtendedHostileMob read(@NotNull IAttachmentHolder holder, @NotNull CompoundTag tag, HolderLookup.@NotNull Provider provider) {
