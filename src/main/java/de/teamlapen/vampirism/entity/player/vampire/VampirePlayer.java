@@ -29,6 +29,7 @@ import de.teamlapen.vampirism.core.*;
 import de.teamlapen.vampirism.effects.SanguinareEffect;
 import de.teamlapen.vampirism.effects.VampireNightVisionEffectInstance;
 import de.teamlapen.vampirism.entity.ExtendedCreature;
+import de.teamlapen.vampirism.entity.ExtendedHostileMob;
 import de.teamlapen.vampirism.entity.factions.FactionPlayerHandler;
 import de.teamlapen.vampirism.entity.minion.VampireMinionEntity;
 import de.teamlapen.vampirism.entity.player.FactionBasePlayer;
@@ -1289,17 +1290,13 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
         float saturationMod = IBloodStats.HIGH_SATURATION;
         boolean continue_feeding = true;
         if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_HOSTILE && entity.isAlive()) {
-            // Handle hostile mob blood drinking
-            blood = HostileMobBloodRegistry.getBloodAmount(entity);
-            saturationMod = HostileMobBloodRegistry.getSaturation(entity);
-            // Advanced biter: stop before killing the mob (when health is low)
-            // Each blood point roughly correlates to 0.5 hearts of health when drunk
-            // Stop if the mob would die from another drink (conservative estimate)
-            if (isAdvancedBiter()) {
-                float estimatedDamagePerDrink = blood * 0.5f;
-                if (entity.getHealth() <= estimatedDamagePerDrink * 1.5f) {
-                    continue_feeding = false;
-                }
+            // Handle hostile mob blood drinking using ExtendedHostileMob attachment
+            Optional<ExtendedHostileMob> opt = ExtendedHostileMob.getSafe(entity);
+            blood = opt.map(hostileMob -> hostileMob.onBite(this)).orElse(0);
+            saturationMod = opt.map(IExtendedCreatureVampirism::getBloodSaturation).orElse(0f);
+            // Advanced biter: stop when only 1 blood remains (prevents killing)
+            if (isAdvancedBiter() && opt.map(IExtendedCreatureVampirism::getBlood).orElse(0) == 1) {
+                continue_feeding = false;
             }
         } else if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_CREATURE && entity.isAlive()) {
             Optional<ExtendedCreature> opt = ExtendedCreature.getSafe(entity);

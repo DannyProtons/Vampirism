@@ -3,6 +3,7 @@ package de.teamlapen.vampirism.core;
 import de.teamlapen.vampirism.REFERENCE;
 import de.teamlapen.vampirism.api.VampirismAttachments;
 import de.teamlapen.vampirism.entity.ExtendedCreature;
+import de.teamlapen.vampirism.entity.ExtendedHostileMob;
 import de.teamlapen.vampirism.entity.factions.FactionPlayerHandler;
 import de.teamlapen.vampirism.entity.player.hunter.HunterPlayer;
 import de.teamlapen.vampirism.entity.player.vampire.VampireBat;
@@ -27,6 +28,7 @@ public class ModAttachments {
 
     // Entity Attachments
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<ExtendedCreature>> EXTENDED_CREATURE = ATTACHMENT_TYPES.register(VampirismAttachments.Keys.EXTENDED_CREATURE.getPath(), () -> AttachmentType.builder(new ExtendedCreature.Factory()).serialize(new ExtendedCreature.Serializer()).build());
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<ExtendedHostileMob>> EXTENDED_HOSTILE_MOB = ATTACHMENT_TYPES.register(VampirismAttachments.Keys.EXTENDED_HOSTILE_MOB.getPath(), () -> AttachmentType.builder((holder) -> holder instanceof net.minecraft.world.entity.LivingEntity entity ? new ExtendedHostileMob(entity) : null).serialize(new ExtendedHostileMob.Serializer()).build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FactionPlayerHandler>> FACTION_PLAYER_HANDLER = ATTACHMENT_TYPES.register(VampirismAttachments.Keys.FACTION_PLAYER_HANDLER.getPath(), () -> AttachmentType.builder(new FactionPlayerHandler.Factory()).serialize(new FactionPlayerHandler.Serializer()).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<HunterPlayer>> HUNTER_PLAYER = ATTACHMENT_TYPES.register(VampirismAttachments.Keys.HUNTER_PLAYER.getPath(), () -> AttachmentType.builder(new HunterPlayer.Factory()).serialize(new HunterPlayer.Serializer()).copyOnDeath().build());
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<VampirePlayer>> VAMPIRE_PLAYER = ATTACHMENT_TYPES.register(VampirismAttachments.Keys.VAMPIRE_PLAYER.getPath(), () -> AttachmentType.builder(new VampirePlayer.Factory()).serialize(new VampirePlayer.Serializer()).copyOnDeath().build());

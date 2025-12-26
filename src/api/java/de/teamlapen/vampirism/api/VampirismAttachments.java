@@ -15,6 +15,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 public class VampirismAttachments {
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IExtendedCreatureVampirism>> EXTENDED_CREATURE = DeferredHolder.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Keys.EXTENDED_CREATURE);
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<IExtendedCreatureVampirism>> EXTENDED_HOSTILE_MOB = DeferredHolder.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Keys.EXTENDED_HOSTILE_MOB);
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IFactionPlayerHandler>> FACTION_PLAYER_HANDLER = DeferredHolder.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Keys.FACTION_PLAYER_HANDLER);
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IVampirePlayer>> VAMPIRE_PLAYER = DeferredHolder.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Keys.VAMPIRE_PLAYER);
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<IHunterPlayer>> HUNTER_PLAYER = DeferredHolder.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, Keys.HUNTER_PLAYER);
@@ -24,6 +25,7 @@ public class VampirismAttachments {
 
     public static class Keys {
         public static final ResourceLocation EXTENDED_CREATURE = VResourceLocation.mod("extended_creature");
+        public static final ResourceLocation EXTENDED_HOSTILE_MOB = VResourceLocation.mod("extended_hostile_mob");
         public static final ResourceLocation FACTION_PLAYER_HANDLER = VResourceLocation.mod("faction_player_handler");
         public static final ResourceLocation VAMPIRE_PLAYER = VResourceLocation.mod("vampire_player");
         public static final ResourceLocation HUNTER_PLAYER = VResourceLocation.mod("hunter_player");
