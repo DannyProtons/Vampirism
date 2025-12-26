@@ -4,7 +4,9 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import de.teamlapen.lib.lib.util.BasicCommand;
 import de.teamlapen.vampirism.command.arguments.MobTypeArgument;
+import de.teamlapen.vampirism.entity.player.vampire.HostileMobDrinkBuffs;
 import de.teamlapen.vampirism.entity.player.vampire.PlayerBloodDrinkData;
+import de.teamlapen.vampirism.entity.player.vampire.VampirePlayer;
 import de.teamlapen.vampirism.world.BloodDrinkProgressionData;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -101,20 +103,33 @@ public class BloodDrinkProgressionCommand extends BasicCommand {
     private static int setTier(@NotNull CommandSourceStack source, @NotNull ServerPlayer player, @NotNull MobTypeArgument.MobType mobType, int tier) {
         BloodDrinkProgressionData data = BloodDrinkProgressionData.getData(player.serverLevel());
         PlayerBloodDrinkData playerData = data.getOrCreatePlayerData(player.getUUID());
+        VampirePlayer vampirePlayer = VampirePlayer.get(player);
 
         switch (mobType) {
-            case ZOMBIE -> playerData.setZombieTier(tier);
-            case ENDERMAN -> playerData.setEndermanTier(tier);
-            case CREEPER -> playerData.setCreeperTier(tier);
+            case ZOMBIE -> {
+                playerData.setZombieTier(tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.ZOMBIE, tier);
+            }
+            case ENDERMAN -> {
+                playerData.setEndermanTier(tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.ENDERMAN, tier);
+            }
+            case CREEPER -> {
+                playerData.setCreeperTier(tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.CREEPER, tier);
+            }
             case ALL -> {
                 playerData.setZombieTier(tier);
                 playerData.setEndermanTier(tier);
                 playerData.setCreeperTier(tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.ZOMBIE, tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.ENDERMAN, tier);
+                HostileMobDrinkBuffs.applyBuffs(vampirePlayer, MobTypeArgument.MobType.CREEPER, tier);
             }
         }
 
         data.setDirty();
-        source.sendSuccess(() -> Component.literal("Set " + mobType.name().toLowerCase() + " tier to " + tier + " for " + player.getName().getString()), true);
+        source.sendSuccess(() -> Component.literal("Set " + mobType.name().toLowerCase() + " tier to " + tier + " for " + player.getName().getString() + " and applied buffs"), true);
         return 0;
     }
 

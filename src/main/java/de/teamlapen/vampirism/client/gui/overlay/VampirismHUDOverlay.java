@@ -16,6 +16,7 @@ import de.teamlapen.vampirism.core.ModEffects;
 import de.teamlapen.vampirism.core.ModFluids;
 import de.teamlapen.vampirism.core.ModItems;
 import de.teamlapen.vampirism.entity.ExtendedCreature;
+import de.teamlapen.vampirism.entity.ExtendedHostileMob;
 import de.teamlapen.vampirism.entity.player.VampirismPlayerAttributes;
 import de.teamlapen.vampirism.entity.player.vampire.VampirePlayer;
 import de.teamlapen.vampirism.items.StakeItem;
@@ -132,12 +133,15 @@ public class VampirismHUDOverlay {
                             biteableOpt = Optional.of((IBiteableEntity) entity);
                         } else if (entity instanceof PathfinderMob && entity.isAlive()) {
                             biteableOpt = ExtendedCreature.getSafe(entity);
+                        } else if (entity instanceof LivingEntity && entity.isAlive()) {
+                            // Check for hostile mob blood (zombies, endermen, creepers, etc.)
+                            biteableOpt = ExtendedHostileMob.getSafe(entity);
                         } else if (entity instanceof Player) {
                             biteableOpt = Optional.of(VampirePlayer.get((Player) entity));
                         }
                         biteableOpt.filter(iBiteableEntity -> iBiteableEntity.canBeBitten(vampire)).ifPresent(biteable -> {
                             int color = 0xFF0000;
-                            if (entity instanceof IHunterMob || ExtendedCreature.getSafe(entity).map(IExtendedCreatureVampirism::hasPoisonousBlood).orElse(false)) {
+                            if (entity instanceof IHunterMob || ExtendedCreature.getSafe(entity).map(IExtendedCreatureVampirism::hasPoisonousBlood).orElse(false) || ExtendedHostileMob.getSafe(entity).map(IExtendedCreatureVampirism::hasPoisonousBlood).orElse(false)) {
                                 color = 0x099022;
                             }
                             renderBloodFangs(event.getGuiGraphics(), this.mc.getWindow().getGuiScaledWidth(), this.mc.getWindow().getGuiScaledHeight(), Mth.clamp(biteable.getBloodLevelRelative(), 0.2F, 1F), color);
