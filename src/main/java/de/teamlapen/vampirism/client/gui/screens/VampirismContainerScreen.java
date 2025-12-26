@@ -153,7 +153,8 @@ public class VampirismContainerScreen extends AbstractContainerScreen<VampirismM
 
         // Request blood drink data from server and add progress widget
         VampirismMod.proxy.sendToServer(new ServerboundRequestBloodDrinkDataPacket());
-        this.bloodDrinkWidget = new BloodDrinkProgressWidget(this.leftPos + 30, this.topPos + 7, 50);
+        // Position widget to the left of the main container
+        this.bloodDrinkWidget = new BloodDrinkProgressWidget(this.leftPos - 130, this.topPos + 7, 120);
         this.addRenderableOnly(this.bloodDrinkWidget);
 
         var button1 = this.addRenderableWidget(new ImageButton(this.leftPos + 7, this.topPos + 90, 20, 20,  SKILLS,  context -> {
