@@ -93,6 +93,16 @@ public class ExtendedHostileMob implements IAttachment, IExtendedCreatureVampiri
     }
 
     @Override
+    public void tick() {
+        if (!entity.getCommandSenderWorld().isClientSide) {
+            // Make sure entities with no blood die
+            if (blood == 0 && entity.tickCount % 20 == 10) {
+                DamageHandler.hurtModded(entity, ModDamageSources::noBlood, 1000);
+            }
+        }
+    }
+
+    @Override
     public int onBite(IVampire biter) {
         if (getBlood() <= 0) return 0;
 
