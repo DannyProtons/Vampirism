@@ -1792,5 +1792,6 @@
   "vampirism.configuration.disable": "Disable",
   "vampirism.configuration.common-server": "Common Server",
   "vampirism.configuration.render": "Render",
-  "vampirism.configuration.renderTotemFactionName": "Render Totem Faction Name"
+  "vampirism.configuration.renderTotemFactionName": "Render Totem Faction Name",
+  "command.vampirism.blooddrink.invalid_type": "Invalid mob type: %s. Valid types: zombie, enderman, creeper, all"
 }

@@ -711,6 +711,13 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
                 player.setHealth(player.getMaxHealth());
                 bloodStats.setBloodLevel(bloodStats.getMaxBlood());
             }
+            // Reapply hostile mob blood drinking buffs from saved data
+            if (!isRemote() && player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                PlayerBloodDrinkData data = de.teamlapen.vampirism.world.BloodDrinkProgressionData.getData(serverLevel).getPlayerData(player.getUUID());
+                if (data != null) {
+                    HostileMobDrinkBuffs.reapplyAllBuffs(this, data);
+                }
+            }
         }
     }
 
@@ -843,6 +850,16 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
                             FluidState state2 = world.getFluidState(player.blockPosition().above());
                             if ((state1.is(FluidTags.WATER) && (state1.getFlow(world, player.blockPosition()).lengthSqr() > 0)) || (state2.is(FluidTags.WATER) && (state2.getFlow(world, player.blockPosition().above()).lengthSqr() > 0))) {
                                 player.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 80, (int) (getLevel() / (float) getMaxLevel() * 3)));
+                            }
+                        }
+                    }
+                    // Zombie blood drinking regeneration (every second)
+                    if (player.tickCount % 20 == 0 && player.level() instanceof net.minecraft.server.level.ServerLevel serverLevel) {
+                        PlayerBloodDrinkData data = de.teamlapen.vampirism.world.BloodDrinkProgressionData.getData(serverLevel).getPlayerData(player.getUUID());
+                        if (data != null && data.getZombieTier() > 0) {
+                            float regenAmount = HostileMobDrinkBuffs.getZombieRegenBonus(data.getZombieTier());
+                            if (regenAmount > 0 && player.getHealth() < player.getMaxHealth()) {
+                                player.heal(regenAmount);
                             }
                         }
                     }
@@ -1201,6 +1218,8 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
         player.getAttribute(ModAttributes.BLOOD_EXHAUSTION).setBaseValue(0);
         player.getAttribute(ModAttributes.NEONATAL_DURATION).setBaseValue(0);
         player.getAttribute(ModAttributes.DBNO_DURATION).setBaseValue(0);
+        // Remove hostile mob blood drinking buffs when leaving vampire faction
+        HostileMobDrinkBuffs.removeAllBuffs(player);
     }
 
     /**
@@ -1273,9 +1292,14 @@ public class VampirePlayer extends FactionBasePlayer<IVampirePlayer> implements 
             // Handle hostile mob blood drinking
             blood = HostileMobBloodRegistry.getBloodAmount(entity);
             saturationMod = HostileMobBloodRegistry.getSaturation(entity);
-            // Hostile mobs die after one bite if advanced biter skill is active
+            // Advanced biter: stop before killing the mob (when health is low)
+            // Each blood point roughly correlates to 0.5 hearts of health when drunk
+            // Stop if the mob would die from another drink (conservative estimate)
             if (isAdvancedBiter()) {
-                continue_feeding = false;
+                float estimatedDamagePerDrink = blood * 0.5f;
+                if (entity.getHealth() <= estimatedDamagePerDrink * 1.5f) {
+                    continue_feeding = false;
+                }
             }
         } else if (feed_victim_bite_type == BITE_TYPE.SUCK_BLOOD_CREATURE && entity.isAlive()) {
             Optional<ExtendedCreature> opt = ExtendedCreature.getSafe(entity);
