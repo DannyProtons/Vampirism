@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "bloodfarm:blood_fruit"
+    }
+  ],
+  "result": {
+    "id": "bloodfarm:blood_fruit",
+    "count": 1
+  }
+}

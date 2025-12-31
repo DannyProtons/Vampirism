@@ -1,0 +1,37 @@
+TEXTURES NEEDED FOR BLOOD FARM MOD
+====================================
+
+This mod requires custom 16x16 pixel textures. Place them in the following locations:
+
+ITEM TEXTURE:
+-------------
+src/main/resources/assets/bloodfarm/textures/item/blood_fruit.png
+  - A dark red/crimson fruit with a blood-like appearance
+  - Suggested style: Similar to a sweet berry but darker, with a glossy/wet look
+
+CROP STAGE TEXTURES (8 total):
+-------------------------------
+All in: src/main/resources/assets/bloodfarm/textures/block/
+
+blood_crop_stage0.png - Tiny sprout, barely visible
+blood_crop_stage1.png - Small dark stem emerging
+blood_crop_stage2.png - Growing stem with first dark leaves
+blood_crop_stage3.png - Larger plant, darker red coloring
+blood_crop_stage4.png - Maturing plant, small buds visible
+blood_crop_stage5.png - Buds growing, crimson color intensifying
+blood_crop_stage6.png - Nearly mature, fruits forming
+blood_crop_stage7.png - Fully grown with ripe blood fruits
+
+STYLE SUGGESTIONS:
+------------------
+- Dark, vampiric aesthetic
+- Deep reds, crimsons, and dark purples
+- Gothic/horror theme to match Vampirism mod
+- Consider adding dripping blood effect on mature stages
+- Dark green/black stems and leaves
+
+TEMPORARY SOLUTION:
+-------------------
+Until you create custom textures, you can use placeholder textures from vanilla:
+- Copy wheat crop textures and tint them red as a temporary solution
+- The mod will work but textures will be missing/purple-black checkerboard
