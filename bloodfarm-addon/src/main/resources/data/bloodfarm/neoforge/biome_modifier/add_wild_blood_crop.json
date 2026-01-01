@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#vampirism:has_faction/vampire",
+  "features": "bloodfarm:wild_blood_crop",
+  "step": "vegetal_decoration"
+}
